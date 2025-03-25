@@ -44,7 +44,7 @@ export default function UsersManagement() {
 
   return (
     <div>
-      <h2>Users Management</h2>
+      <h2>Patrons</h2>
       <div className={styles['input-group']}>
         <div className={styles['input-container']}>
           <input

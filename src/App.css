@@ -1,7 +1,7 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
   text-align: center;
 }
 
@@ -55,4 +55,35 @@ ul {
 
 li {
   padding: 0.5em 0;
+}
+
+.navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #333;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.navigation button {
+  background: none;
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.navigation button.active {
+  background-color: #555;
+  border-radius: 4px;
+}
+
+.content {
+  margin-top: 5rem;
+  padding: 2rem;
 }

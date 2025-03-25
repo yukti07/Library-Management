@@ -42,7 +42,7 @@ export default function BooksManagement() {
 
   return (
     <div>
-      <h2>Books Management</h2>
+      <h2>Catalogue</h2>
       {error && <div style={{ color: 'red', marginBottom: '10px' }}>{error}</div>}
       <div className="input-group">
         <input

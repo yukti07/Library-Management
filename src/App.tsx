@@ -2,29 +2,37 @@ import { useState } from 'react'
 import './App.css'
 import BooksManagement from './components/BooksManagement'
 import UsersManagement from './components/UsersManagement'
+import Home from './components/Home'
 
 function App() {
-  const [activeTab, setActiveTab] = useState('books');
+  const [activeTab, setActiveTab] = useState('home');
 
   return (
     <>
-      <h1>Library Management System</h1>
       <div className="navigation">
+        <button 
+          className={activeTab === 'home' ? 'active' : ''} 
+          onClick={() => setActiveTab('home')}
+        >
+          Home
+        </button>
         <button 
           className={activeTab === 'books' ? 'active' : ''} 
           onClick={() => setActiveTab('books')}
         >
-          Books
+          Catalogue
         </button>
         <button 
           className={activeTab === 'users' ? 'active' : ''} 
           onClick={() => setActiveTab('users')}
         >
-          Users
+          Patrons
         </button>
       </div>
       <div className="content">
-        {activeTab === 'books' ? <BooksManagement /> : <UsersManagement />}
+        {activeTab === 'home' && <Home />}
+        {activeTab === 'books' && <BooksManagement />}
+        {activeTab === 'users' && <UsersManagement />}
       </div>
     </>
   )
