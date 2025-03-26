@@ -9,20 +9,22 @@ describe('App', () => {
     expect(screen.getByText('Library Management System')).toBeInTheDocument();
   });
 
-  it('shows Books tab by default', () => {
+  it('shows Home tab by default', () => {
     render(<App />);
-    const booksButton = screen.getByText('Books');
-    expect(booksButton).toHaveClass('active');
+    const homeButton = screen.getByText('Home');
+    expect(homeButton).toHaveClass('active');
+    expect(screen.getByText('Catalogue')).not.toHaveClass('active');
   });
 
   it('shows Users tab when clicked', async () => {
     const user = userEvent.setup();
     render(<App />);
 
-    const usersButton = screen.getByText('Users');
+    const usersButton = screen.getByText('Patrons');
     await user.click(usersButton);
 
     expect(usersButton).toHaveClass('active');
-    expect(screen.getByText('Books')).not.toHaveClass('active');
+    expect(screen.getByText('Home')).not.toHaveClass('active');
+    expect(screen.getByText('Catalogue')).not.toHaveClass('active');
   });
 });
