@@ -67,6 +67,7 @@ li {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  z-index: 100;
 }
 
 .navigation button {
