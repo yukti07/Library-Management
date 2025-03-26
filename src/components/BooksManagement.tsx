@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Book } from '../types/interfaces';
 import styles from './BooksManagement.module.css';
 import { Search, BookPlus, ClipboardCheck } from "lucide-react";
+import { addBook as addBookToDB, getBooks as getBooksFromDB, deleteBook as deleteBookFromDB } from '../utils/indexedDB';
 
 type View = 'find' | 'add' | 'issue';
 
@@ -17,7 +18,15 @@ export default function BooksManagement() {
     availableCopies: undefined
   });
 
-  const addBook = () => {
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const booksFromDB = await getBooksFromDB();
+      setBooks(booksFromDB);
+    };
+    fetchBooks();
+  }, []);
+
+  const addBook = async () => {
     setError('');
     if (!newBook.title.trim()) {
       setError('Title is required');
@@ -38,11 +47,13 @@ export default function BooksManagement() {
       issuedTo: [],
       availableCopies: newBook.copies
     };
+    await addBookToDB(book);
     setBooks([...books, book]);
     setNewBook({ title: '', author: '', copies: undefined, availableCopies: undefined });
   };
 
-  const deleteBook = (id: string) => {
+  const deleteBook = async (id: string) => {
+    await deleteBookFromDB(id);
     setBooks(books.filter(book => book.id !== id));
   };
 

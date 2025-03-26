@@ -20,3 +20,96 @@
   align-items: flex-start;
   margin-bottom: 1rem;
 }
+
+.actionTiles {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 120px;
+  transition: all 0.3s ease;
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.tile.active {
+  background-color: #e6e6e6;
+}
+
+.searchBar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: center;
+}
+
+.searchBar input {
+  width: 300px;
+}
+
+.tableContainer {
+  width: 100%;
+  max-width: 1200px;
+  overflow-y: auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-height: 300px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #e2e8f0;
+}
+
+.table th {
+  background-color: #f8fafc;
+  color: #1e293b;
+  font-weight: 600;
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 2px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #475569;
+  height: 45px;
+}
+
+.table tr:hover {
+  background-color: #f1f5f9;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 2rem !important;
+  color: #666 !important;
+  font-style: italic;
+}
