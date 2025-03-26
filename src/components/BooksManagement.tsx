@@ -1,10 +1,24 @@
 import { useState, useEffect } from 'react';
-import { Book } from '../types/interfaces';
+import { Book, User } from '../types/interfaces';
 import styles from './BooksManagement.module.css';
 import { Search, BookPlus, ClipboardCheck } from "lucide-react";
-import { addBook as addBookToDB, getBooks as getBooksFromDB, deleteBook as deleteBookFromDB } from '../utils/indexedDB';
+import { 
+  addBook as addBookToDB, 
+  getBooks as getBooksFromDB, 
+  deleteBook as deleteBookFromDB,
+  updateBook,
+  getUser,
+  updateUser,
+  getBook
+} from '../utils/indexedDB';
+import { generateBookId } from '../utils/idGenerator';
 
 type View = 'find' | 'add' | 'issue';
+
+interface IssueForm {
+  bookId: string;
+  userId: string;
+}
 
 export default function BooksManagement() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -17,6 +31,8 @@ export default function BooksManagement() {
     copies: undefined,
     availableCopies: undefined
   });
+  const [issueForm, setIssueForm] = useState<IssueForm>({ bookId: '', userId: '' });
+  const [issueError, setIssueError] = useState<string>('');
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -43,7 +59,7 @@ export default function BooksManagement() {
 
     const book: Book = {
       ...newBook,
-      id: Date.now().toString(),
+      id: generateBookId(),
       issuedTo: [],
       availableCopies: newBook.copies
     };
@@ -55,6 +71,63 @@ export default function BooksManagement() {
   const deleteBook = async (id: string) => {
     await deleteBookFromDB(id);
     setBooks(books.filter(book => book.id !== id));
+  };
+
+  const handleIssueBook = async () => {
+    setIssueError('');
+    const { bookId, userId } = issueForm;
+
+    if (!bookId || !userId) {
+      setIssueError('Both Book ID and User ID are required');
+      return;
+    }
+
+    try {
+      const book = await getBook(bookId);
+      const user = await getUser(userId);
+
+      if (!book || !user) {
+        setIssueError('Invalid Book ID or User ID');
+        return;
+      }
+
+      if (!book.availableCopies || book.availableCopies <= 0) {
+        setIssueError('This book is not available for issue');
+        return;
+      }
+
+      // Update book
+      const updatedBook: Book = {
+        ...book,
+        availableCopies: book.availableCopies - 1,
+        issuedTo: [...book.issuedTo, userId]
+      };
+
+      // Update user's issued books
+      const existingBookRecord = user.issuedBooks.find(record => record.bookId === bookId);
+      const updatedUser: User = {
+        ...user,
+        issuedBooks: existingBookRecord
+          ? user.issuedBooks.map(record =>
+              record.bookId === bookId
+                ? { ...record, copies: record.copies + 1 }
+                : record
+            )
+          : [...user.issuedBooks, { bookId, copies: 1 }]
+      };
+
+      await updateBook(updatedBook);
+      await updateUser(updatedUser);
+
+      // Update local state
+      setBooks(books.map(b => b.id === bookId ? updatedBook : b));
+      setIssueForm({ bookId: '', userId: '' });
+      setCurrentView('find');
+
+    } catch (error) {
+      setIssueError('Failed to issue book. Please try again.');
+      console.error('Error issuing book:', error);
+    }
   };
 
   const filteredBooks = books.filter(book => 
@@ -112,15 +185,22 @@ export default function BooksManagement() {
       case 'issue':
         return (
           <div className={styles.form}>
-            <input
-              type="text"
-              placeholder="Enter Book ID"
-            />
-            <input
-              type="text"
-              placeholder="Enter User ID"
-            />
-            <button>Issue Book</button>
+            {issueError && <div className={styles.error}>{issueError}</div>}
+            <div className={styles.inputGroup}>
+              <input
+                type="text"
+                value={issueForm.bookId}
+                onChange={(e) => setIssueForm({...issueForm, bookId: e.target.value})}
+                placeholder="Enter Book ID"
+              />
+              <input
+                type="text"
+                value={issueForm.userId}
+                onChange={(e) => setIssueForm({...issueForm, userId: e.target.value})}
+                placeholder="Enter User ID"
+              />
+            </div>
+            <button onClick={handleIssueBook}>Issue Book</button>
           </div>
         );
     }

@@ -3,6 +3,7 @@ import { User } from '../types/interfaces';
 import styles from './UsersManagement.module.css';
 import { Search, UserPlus } from "lucide-react";
 import { addUser as addUserToDB, getUsers as getUsersFromDB } from '../utils/indexedDB';
+import { generateUserId } from '../utils/idGenerator';
 
 type View = 'find' | 'add';
 
@@ -47,7 +48,7 @@ export default function UsersManagement() {
     if (validateForm()) {
       const user: User = {
         ...newUser,
-        id: Date.now().toString(),
+        id: generateUserId(),
         issuedBooks: []
       };
       await addUserToDB(user);
@@ -135,6 +136,7 @@ export default function UsersManagement() {
         <table className={styles.table}>
           <thead>
             <tr>
+              <th>ID</th>
               <th>Name</th>
               <th>Email</th>
               <th>Books Issued</th>
@@ -143,13 +145,14 @@ export default function UsersManagement() {
           <tbody>
             {filteredUsers.length === 0 ? (
               <tr>
-                <td colSpan={3} className={styles.emptyMessage}>
+                <td colSpan={4} className={styles.emptyMessage}>
                   No users found
                 </td>
               </tr>
             ) : (
               filteredUsers.map((user) => (
                 <tr key={user.id}>
+                  <td>{user.id}</td>
                   <td>{user.name}</td>
                   <td>{user.email}</td>
                   <td>{user.issuedBooks.length}</td>

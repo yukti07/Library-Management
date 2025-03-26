@@ -7,9 +7,14 @@ export interface Book {
   issuedTo: string[];
 }
 
+export interface IssuedBookRecord {
+  bookId: string;
+  copies: number;
+}
+
 export interface User {
   id: string;
   name: string;
   email: string;
-  issuedBooks: string[];
+  issuedBooks: IssuedBookRecord[];
 }
